@@ -1,2 +1,2 @@
 # project-euler-sols
-my solutions to Project Euler problems
+Looking for a new challenge because leetcode is getting a little repetitive after solving hundreds of problems.
