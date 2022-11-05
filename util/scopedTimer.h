@@ -9,21 +9,17 @@ namespace timer
   class ScopedTimer
   {
   public:
-    ScopedTimer() : begin(std::chrono::high_resolution_clock::now()) {}
+    ScopedTimer() : begin_wall(std::chrono::high_resolution_clock::now()), begin_cpu(std::clock()) {}
 
     ~ScopedTimer()
     {
-      auto end = std::chrono::high_resolution_clock::now();
-      auto elapsed =
-          std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin);
+      auto end_wall = std::chrono::high_resolution_clock::now();
+      auto end_cpu = std::clock();
+      auto elapsed_wall =
+          std::chrono::duration_cast<std::chrono::nanoseconds>(end_wall - begin_wall);
+      auto elapsed_cpu = end_cpu - begin_cpu;
 
-      get_manager().add_time(elapsed);
-      // std::cout << "Function ran in: " << elapsed.count() * 1e-9 << " seconds"
-      //           << std::endl;
-      // std::cout << "Function ran in: " << elapsed.count() << " nanoseconds"
-      //           << std::endl;
-      // printf("Function ran in: %.3f seconds.\n", elapsed.count() * 1e-9);
-      // printf("Function ran in: %lld nanoseconds.\n", elapsed.count());
+      get_manager().add_time(elapsed_wall, elapsed_cpu);
     }
 
     static ScopedTimerManager &get_manager()
@@ -34,7 +30,7 @@ namespace timer
     }
 
   private:
-    std::chrono::steady_clock::time_point begin;
-
+    std::chrono::steady_clock::time_point begin_wall;
+    std::clock_t begin_cpu;
   };
 } // namespace Timer
